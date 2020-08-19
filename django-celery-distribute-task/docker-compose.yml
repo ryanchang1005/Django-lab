@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_DB=django_celery_test
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_PASSWORD=Oa9JqoHQ0b
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:5
+    restart: always
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - 6379:6379
+
+  web:
+    build: .
+    image: django_celery_test
+    command: bash -c "python manage.py runserver 0:8000"
+    volumes:
+      - django-static:/django_celery_test/staticfiles
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+
+  celery-worker:
+    image: django_celery_test
+    command: celery -A core worker --concurrency=10 -l info -n worker1@%h
+    depends_on:
+      - web
+      - redis
+
+  celery-beat:
+    image: django_celery_test
+    command: celery -A core beat -l info
+    depends_on:
+      - web
+      - redis
+
+volumes:
+  dbdata:
+  django-static:

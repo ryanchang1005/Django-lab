@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="{% url "create" %}"
+      method="post">
+    {% csrf_token %}
+    Create task count :
+    <input name="count"
+           type="number">
+    <button type="submit">
+        Confirm
+    </button>
+</form>
+
+<form action="{% url "update_config" %}"
+      method="post">
+    {% csrf_token %}
+    Distribute task count :
+    <input name="distribute_task_count"
+           type="number"
+           value="{{ distribute_task_count }}">
+    <button type="submit">
+        Confirm
+    </button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>DONE TIME</th>
+        <th>NODE</th>
+    </tr>
+    </thead>
+    {% for task in task_list %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.done_time }}</td>
+            <td>{{ task.node }}</td>
+        </tr>
+    {% endfor %}
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
