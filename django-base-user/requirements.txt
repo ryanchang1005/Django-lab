@@ -1,0 +1,7 @@
+autopep8==1.4.4
+Django==2.2.3
+djangorestframework==3.9.4
+numpy==1.16.4
+pycryptodome==3.8.2
+psycopg2==2.8.2
+gunicorn==19.9.0
