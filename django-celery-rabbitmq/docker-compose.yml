@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15673:15672
+      - 5673:5672
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+
+  celery-worker:
+    image: app
+    command: celery -A core worker --concurrency=4 -l info -n worker1@%h
+
+  web:
+    build: .
+    image: app
+    command: bash -c "python manage.py migrate && python manage.py runserver 0:8000"
+    ports:
+      - 8000:8000
+
+volumes:
+  dbdata:

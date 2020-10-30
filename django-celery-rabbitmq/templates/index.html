@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django-Celery-RabbitMQ</title>
+</head>
+<body>
+
+<form action="{% url "create" %}"
+      method="post">
+    {% csrf_token %}
+    <select name="create_type">
+        {% for option in create_type_options %}
+            <option value="{{ option.k }}">{{ option.v }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">
+        Create
+    </button>
+</form>
+
+<br><br><br>
+
+<table>
+    <thead>
+    <tr>
+        <td>ID</td>
+        <td>Create type</td>
+        <td>Create time</td>
+        <td>Notify payment system done time</td>
+        <td>Notify logistics system done time</td>
+        <td>Send email done time</td>
+        <td>Done duration</td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in order_list %}
+        <tr>
+            <td>{{ order.pk }}</td>
+            <td>{{ order.create_type_display }}</td>
+            <td>{{ order.create_time }}</td>
+            <td>{{ order.notify_payment_system_done_time }}</td>
+            <td>{{ order.notify_logistics_system_done_time }}</td>
+            <td>{{ order.send_email_done_time }}</td>
+            <td>{{ order.done_duration }}</td>
+            <td>
+                <form action="{% url "delete" order.pk %}"
+                      method="post">
+                    {% csrf_token %}
+                    <button type="submit">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
