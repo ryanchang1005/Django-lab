@@ -1,0 +1,37 @@
+# Framework
+django==2.2.9
+django-environ==0.4.5
+django-redis==4.11.0
+djangorestframework==3.9.4
+rest-condition==1.0.3
+argon2-cffi==19.2.0  # password hasher
+django-cors-headers==3.6.0
+
+# PostgreSQL
+psycopg2==2.8.2
+psycopg2-binary==2.8.2
+
+# Gunicorn
+gunicorn==20.0.4
+
+# Encryption
+pycryptodome==3.9.7
+numpy==1.16.3
+
+# QRCode
+qrcode==6.1
+Pillow==7.0.0
+
+# Celery
+celery==4.4.0
+flower==0.9.3
+
+# OTP
+pyotp==2.2.7
+
+# Http request
+requests==2.23.0
+
+# Testing
+coverage==5.1
+freezegun==0.3.15
