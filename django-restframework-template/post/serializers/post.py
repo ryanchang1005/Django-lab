@@ -8,8 +8,9 @@ class CreatePostSerializer(serializers.Serializer):
     content = serializers.CharField()
 
 
-class EditUserSerializer(serializers.Serializer):
-    display_name = serializers.CharField()
+class UpdatePostSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    content = serializers.CharField()
 
 
 class PostDisplaySerializer(serializers.Serializer):

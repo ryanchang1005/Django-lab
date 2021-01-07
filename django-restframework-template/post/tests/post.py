@@ -47,6 +47,8 @@ class PostAPITestCase(BaseUserTestCase):
         self.assertTrue('title' in return_data)
         self.assertTrue('content' in return_data)
         self.assertTrue('author_id' in return_data)
+        self.assertEqual(return_data['title'], title)
+        self.assertEqual(return_data['content'], content)
 
     def test_get_post(self):
         post = self._create_post('title', 'content')
@@ -79,3 +81,28 @@ class PostAPITestCase(BaseUserTestCase):
 
         # assert
         self.assertEqual(rsp.status_code, 200)
+
+    def test_update_post(self):
+        post = self._create_post('title1', 'content1')
+
+        # ready
+        title = 'new_title'
+        content = 'new_content'
+        data = {
+            'uts': get_uts(),
+            'title': title,
+            'content': content,
+        }
+
+        # execute
+        rsp = self.api_client.put(f'/api/post/{post.id}/', data=data)
+
+        # assert
+        self.assertEqual(rsp.status_code, 200)
+        return_data = rsp.json()
+        self.assertTrue('post_id' in return_data)
+        self.assertTrue('title' in return_data)
+        self.assertTrue('content' in return_data)
+        self.assertTrue('author_id' in return_data)
+        self.assertEqual(return_data['title'], title)
+        self.assertEqual(return_data['content'], content)

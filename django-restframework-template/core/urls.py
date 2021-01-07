@@ -1,6 +1,4 @@
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
 
 from rest_framework import routers
 
@@ -14,5 +12,3 @@ router.register('post', PostViewSet, base_name='post')
 urlpatterns = [
     path('api/', include(router.urls))
 ]
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
