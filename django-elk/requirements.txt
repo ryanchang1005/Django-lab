@@ -1,0 +1,8 @@
+# Framework
+django==2.2.9
+
+# Gunicorn
+gunicorn==20.0.4
+
+# Logger
+python-logstash==0.4.6
