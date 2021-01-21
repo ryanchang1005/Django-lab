@@ -32,18 +32,20 @@ class PlaceService:
     @staticmethod
     def filter_around_place(
             center_position,
-            distance
+            distance,
+            limit=20,
     ):
         """
         取出position周遭distance公里的景點, 並算出距離, 距離遞增
         :param center_position: GEOSGeometry: 中心點
         :param distance: str | float: 範圍N公里
+        :param limit: int: 前N筆
         :return: list
         """
 
         qs = Place.objects.filter(position__distance_lte=(center_position, D(km=distance))) \
             .annotate(distance=Distance('center_position', center_position)) \
-            .order_by('distance')
+            .order_by('distance')[:limit]
 
         place_list = []
         for place in qs:
