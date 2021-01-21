@@ -1,0 +1,8 @@
+# Framework
+django==2.2.9
+
+# PostgreSQL
+psycopg2==2.8.2
+psycopg2-binary==2.8.2
+
+geopy==2.0.0
