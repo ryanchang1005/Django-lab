@@ -7,12 +7,12 @@
 
 ## Simulate order creation
 1. Create order(0s)
-1. Notify payment system(3s)
-2. Notify logistics system(3s)
-3. Send email(3s)
+2. Notify payment system(3s)
+3. Notify logistics system(3s)
+4. Send email(3s)
 
 
-## YA
+## VS
 ```
 sync
 total time = 0 + 3 + 3 + 3 = 9
