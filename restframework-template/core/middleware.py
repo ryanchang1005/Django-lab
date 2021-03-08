@@ -59,7 +59,56 @@ class TokenCheckMiddleware(MiddlewareMixin):
             return ResponseInvalidToken
 
 
+# class VerifyRateLimitMiddleware(MiddlewareMixin):
+#     """
+#     驗證API key限制速率
+#     5 request per second
+#     """
+
+#     @un_authenticate_api_exempt
+#     def process_request(self, request):
+#         api_key = request.GET.get('api_key')
+
+#         if not RateLimitService.touch_and_return_is_pass(api_key):
+#             write_log(
+#                 LOGGER_MIDDLEWARE_VERIFY_RATE_LIMIT,
+#                 'error',
+#                 f'api_key={api_key}'
+#             )
+#             return ExceedRateLimitResponse
+
+
 class LogMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         LogService.log_middleware(request)
+
+# class LogAPIKeyMiddleware(MiddlewareMixin):
+#     """
+#     記錄此api_key, ip, url_path紀錄
+#     """
+
+#     @django_admin_exempt
+#     def process_request(self, request):
+#         api_key = request.GET.get('api_key')
+#         url_path = request.path
+#         ip = self.get_client_ip(request)
+
+#         ec_user = EcUserService.filter(api_key=api_key).first()
+
+#         try:
+#             APIKeyLogService.create(
+#                 ec_user=ec_user,
+#                 ip=ip,
+#                 url_path=url_path
+#             )
+#         except:
+#             pass
+
+#     def get_client_ip(self, request):
+#         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+#         if x_forwarded_for:
+#             ip = x_forwarded_for.split(',')[0]
+#         else:
+#             ip = request.META.get('REMOTE_ADDR')
+#         return ip
