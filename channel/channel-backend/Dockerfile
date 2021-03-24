@@ -1,0 +1,6 @@
+FROM channel
+
+ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE core.settings
+
+COPY . .

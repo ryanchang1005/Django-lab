@@ -1,0 +1,15 @@
+SECRET_KEY=66a=#a(gv#bo29_zyidp$t58p^s88_v)$fe#ovg2k0-bq%%zn#
+DEBUG=True
+ALLOWED_HOSTS=*
+
+CACHE_URL=redis://127.0.0.1:6379/0
+CELERY_URL=redis://127.0.0.1:6379/1
+DATABASE_URL_DEFAULT=psql://channel_user:channel_password@127.0.0.1:5432/channel_db
+
+SESSION_REDIS_URL=127.0.0.1
+SESSION_REDIS_DB=2
+SESSION_REDIS_PORT=6379
+
+CHANNEL_REDIS_URL=redis://127.0.0.1:6379/3
+
+PROJECT_NAME=Channel

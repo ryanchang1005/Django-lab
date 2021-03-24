@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11
+    environment:
+      - POSTGRES_DB=channel_db
+      - POSTGRES_USER=channel_user
+      - POSTGRES_PASSWORD=channel_password
+    ports:
+      - 5432:5432
+    volumes:
+      - channel-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:5
+    restart: always
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - 6379:6379
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - channel-static:/staticfiles
+    depends_on:
+      - web
+
+  web:
+    build: ../../.
+    image: channel
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py migrate && daphne -b 0.0.0.0 core.asgi:application"
+    volumes:
+      - channel-static:/channel/staticfiles
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+
+  celery-worker:
+    image: channel
+    command: celery -A core worker --concurrency=2 -l info -n worker1@%h
+    depends_on:
+      - redis
+
+  celery-beat:
+    image: channel
+    command: celery -A core beat -l info
+    depends_on:
+      - redis
+
+volumes:
+  channel-data:
+  channel-static:

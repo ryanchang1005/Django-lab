@@ -1,0 +1,27 @@
+<form method="post"
+      action="{% url "add_chat" %}">
+    {% csrf_token %}
+    <button type="submit">Generate chat</button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <td>Id</td>
+        <td>CreateTime</td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for it in chat_list %}
+        <tr>
+            <td>{{ it.pub_id }}</td>
+            <td>{{ it.create_time }}</td>
+            <td>
+                <a href="{% url "chat_room" it.pub_id %}">
+                    view
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
