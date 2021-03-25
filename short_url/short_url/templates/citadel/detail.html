@@ -1,0 +1,10 @@
+<a href="{% url "create" %}">返回</a><br>
+你的短連結為 : <a id="shortURL" target="_blank"></a>
+
+<script>
+    window.onload = function () {
+        let shortURLText = document.getElementById("shortURL");
+        shortURLText.innerHTML = window.location.host + "/{{ code }}";
+        shortURLText.href = "http://" + window.location.host + "/{{ code }}";
+    }
+</script>

@@ -1,0 +1,12 @@
+FROM python:3.7
+
+RUN mkdir /requirements
+RUN mkdir /short_url
+
+WORKDIR /short_url
+
+COPY requirements.txt /requirements/requirements.txt
+
+RUN pip install -r /requirements/requirements.txt
+
+# docker build . -f DockerfileBase -t short_url

@@ -1,0 +1,15 @@
+# Framework
+django==2.2.9
+django-environ==0.4.5
+django-redis==4.11.0
+django-redis-sessions==0.6.2
+djangorestframework==3.9.4
+rest-condition==1.0.3
+argon2-cffi==19.2.0
+
+# PostgreSQL
+psycopg2==2.8.2
+psycopg2-binary==2.8.2
+
+# Gunicorn
+gunicorn==20.0.4
