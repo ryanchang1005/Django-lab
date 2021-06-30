@@ -4,7 +4,7 @@ services:
   web:
     build: ../.
     image: djangoelk
-    command: bash -c "python manage.py migrate && gunicorn --workers=2 --timeout 100 core.wsgi -b 0.0.0.0:8000 --reload --error-logfile '/djangoelk/logs/gunicorn-error.log'"
+    command: bash -c "python manage.py migrate && gunicorn --workers=4 --timeout 100 core.wsgi -b 0.0.0.0:8000 --reload --error-logfile '/djangoelk/logs/gunicorn-error.log'"
     ports:
       - 8000:8000
     volumes:
@@ -20,7 +20,7 @@ services:
       - web
   
   filebeat:
-    image: filebeat:latest
+    image: docker.elastic.co/beats/filebeat:6.8.16
     volumes:
       - logs_volume:/app/logs
     command: filebeat -c /etc/filebeat/filebeat.yml -e -d "*" -strict.perms=false
@@ -28,17 +28,22 @@ services:
       - web
   
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.16
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     ports:
       - 9200:9200
       - 9300:9300
     environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.1.0
+    image: docker.elastic.co/logstash/logstash-oss:6.8.16
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
@@ -46,12 +51,12 @@ services:
       - 5000:5000
       - 5044:5044
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      LS_JAVA_OPTS: "-Xmx1g -Xms1g"
     depends_on:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.1.0
+    image: docker.elastic.co/kibana/kibana-oss:6.8.16
     volumes:
       - ./kibana/config/:/usr/share/kibana/config:ro
     ports:
