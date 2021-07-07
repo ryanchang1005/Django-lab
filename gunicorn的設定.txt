@@ -1,0 +1,16 @@
+Gunicorn
+文件 : https://docs.gunicorn.org/en/stable/design.html
+
+安裝 :
+gunicorn==20.0.4
+gevent==21.1.2
+
+範例指令 : 
+gunicorn --workers 5 --worker-class gevent --timeout 100 core.wsgi -b 0.0.0.0:8000 --reload
+
+Worker數如何定
+根據文件指出worker數量大部分是介於4-12個worker processes去撐每秒幾百或幾千個request
+官方建議(2 x $num_cores) + 1
+
+如何定Worker class(https://medium.com/@genchilu/%E6%B7%BA%E8%AB%87-gunicorn-%E5%90%84%E5%80%8B-worker-type-%E9%81%A9%E5%90%88%E7%9A%84%E6%83%85%E5%A2%83-490b20707f28)
+懶人包 : I/O bound用gevent, CPU bound用gthread
