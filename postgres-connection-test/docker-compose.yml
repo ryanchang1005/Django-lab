@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=connection_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_password
+    ports:
+      - 5432:5432
+    volumes:
+      - connection-test-data:/var/lib/postgresql/data
+
+volumes:
+  connection-test-data:
