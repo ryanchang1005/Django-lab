@@ -1,7 +1,12 @@
-# special
+# python virtual environment
 venv/
-redis/
+
+# environment secret dir
 envs/
+
+# redis db
+dump.rdb
+
 
 # Created by https://www.gitignore.io/api/django
 # Edit at https://www.gitignore.io/?templates=django

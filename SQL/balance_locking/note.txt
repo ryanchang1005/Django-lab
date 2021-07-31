@@ -1,0 +1,91 @@
+主要功能
+1. UserBalanceService.get_balance(user)
+2. UserBalanceService.increase_balance(user, Decimal(100))
+3. UserBalanceService.decrease_balance(user, Decimal(100))
+4. client = BalanceVerifyFactory.get_client()
+5. client.is_verify()
+6. client.generate_hash()
+
+餘額異動問題
+1. 同時很多人異動餘額如何確保餘額正確性
+2. 如被串改to_balance
+
+Function
+    def get_balance_message_for_verify(time, user_detail, new_balance):
+        """
+        返回要拿去hash的message
+        """
+        # '2021-07-29T23:10:52Z.1001.10000.00.aaaAAA1110aaaAAA1110aaaAAA1110aaaAAA1110'
+        return f'{time}.{user_detail.user.id}.{new_balance}.{user_detail.balance_hash_salt}'
+    
+    def get_balance(user_detail):
+        balance = user_detail.balance
+        balance_hash = user_detail.balance_hash
+        
+        if BalanceVerifyFactory.get_client().is_verify() is False:
+            raise InvalidBalance(f'username = {user_detail.user.username}, balance = {balance}, balance_hash = {user.userdetail.balance_hash}')
+
+        return balance
+    
+    def increase_balance(user_detail, amount):
+        if amount <= 0:
+            raise InvalidAmount('Can not be negative')
+        _update_balance(user_detail, amount)
+    
+    def decrease_balance(user_detail, amount):
+        if amount <= 0:
+            raise InvalidAmount('Can not be negative')
+        
+        _update_balance(user_detail, amount)
+    
+    def _update_balance(user_detail, amount):
+        with transaction:
+            user = user_detail.user
+            
+            # 取得餘額並驗證
+            balance = self.get_balance(user_detail)
+            
+            # 新餘額
+            new_balance = balance + amount
+
+            # 檢查餘額足夠
+            if new_balance < 0:
+                raise BalanceNotEnough()
+
+            # 產生新的Hash(time, user id, 新餘額, salt)
+            time = get_datetime_format_ISO8601()
+            msg = '{time}.{user_detail.user.id}.{new_balance}.{user_detail.balance_hash_salt}'
+            new_balance_hash = BalanceVerifyFactory.get_client().generate_hash(msg)
+
+            UserDetail.filter(
+                user=user,
+                balance=balance,
+                balance_hash=user_detail.balance_hash,
+            ).update(
+                balance=new_balance,
+                balance_hash=new_balance_hash,
+                balance_update_at=time,
+            )
+
+            UserBalanceLog.objects.create(
+                user=user,
+                amount=new_balance - balance
+                from_balance=balance,
+                to_balance=new_balance,
+                created=time,
+            )
+
+Table
+    class UserDetail:
+        user = FK(User, uniqle)
+        balance = Decimal()
+        balance_hash_salt = Char(40)
+        balance_hash = Char(64)
+        balance_update_at = DateTime()
+
+    class UserBalanceLog:
+        user = FK(User)
+        amount = Decimal()
+        from_balance = Decimal(min=0)
+        to_balance = Decimal(min=0)
+        created = DateTime()
